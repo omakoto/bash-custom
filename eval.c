@@ -87,55 +87,55 @@ reader_loop ()
 
       /* XXX - why do we set this every time through the loop? */
       if (interactive_shell && signal_is_ignored (SIGINT) == 0)
-	set_signal_handler (SIGINT, sigint_sighandler);
+    set_signal_handler (SIGINT, sigint_sighandler);
 
       if (code != NOT_JUMPED)
-	{
-	  indirection_level = our_indirection_level;
+    {
+      indirection_level = our_indirection_level;
 
-	  switch (code)
-	    {
-	      /* Some kind of throw to top_level has occurred. */
-	    case FORCE_EOF:
-	    case ERREXIT:
-	    case EXITPROG:
-	      current_command = (COMMAND *)NULL;
-	      if (exit_immediately_on_error)
-		variable_context = 0;	/* not in a function */
-	      EOF_Reached = EOF;
-	      goto exec_done;
+      switch (code)
+        {
+          /* Some kind of throw to top_level has occurred. */
+        case FORCE_EOF:
+        case ERREXIT:
+        case EXITPROG:
+          current_command = (COMMAND *)NULL;
+          if (exit_immediately_on_error)
+        variable_context = 0;   /* not in a function */
+          EOF_Reached = EOF;
+          goto exec_done;
 
-	    case DISCARD:
-	      /* Make sure the exit status is reset to a non-zero value, but
-		 leave existing non-zero values (e.g., > 128 on signal)
-		 alone. */
-	      if (last_command_exit_value == 0)
-		last_command_exit_value = EXECUTION_FAILURE;
-	      if (subshell_environment)
-		{
-		  current_command = (COMMAND *)NULL;
-		  EOF_Reached = EOF;
-		  goto exec_done;
-		}
-	      /* Obstack free command elements, etc. */
-	      if (current_command)
-		{
-		  dispose_command (current_command);
-		  current_command = (COMMAND *)NULL;
-		}
+        case DISCARD:
+          /* Make sure the exit status is reset to a non-zero value, but
+         leave existing non-zero values (e.g., > 128 on signal)
+         alone. */
+          if (last_command_exit_value == 0)
+        last_command_exit_value = EXECUTION_FAILURE;
+          if (subshell_environment)
+        {
+          current_command = (COMMAND *)NULL;
+          EOF_Reached = EOF;
+          goto exec_done;
+        }
+          /* Obstack free command elements, etc. */
+          if (current_command)
+        {
+          dispose_command (current_command);
+          current_command = (COMMAND *)NULL;
+        }
 #if defined (HAVE_POSIX_SIGNALS)
-	      sigprocmask (SIG_SETMASK, &top_level_mask, (sigset_t *)NULL);
+          sigprocmask (SIG_SETMASK, &top_level_mask, (sigset_t *)NULL);
 #endif
-	      break;
+          break;
 
-	    default:
-	      command_error ("reader_loop", CMDERR_BADJUMP, code, 0);
-	    }
-	}
+        default:
+          command_error ("reader_loop", CMDERR_BADJUMP, code, 0);
+        }
+    }
 
       executing = 0;
       if (temporary_env)
-	dispose_used_env_vars ();
+    dispose_used_env_vars ();
 
 #if (defined (ultrix) && defined (mips)) || defined (C_ALLOCA)
       /* Attempt to reclaim memory allocated with alloca (). */
@@ -143,40 +143,40 @@ reader_loop ()
 #endif
 
       if (read_command () == 0)
-	{
-	  if (interactive_shell == 0 && read_but_dont_execute)
-	    {
-	      last_command_exit_value = EXECUTION_SUCCESS;
-	      dispose_command (global_command);
-	      global_command = (COMMAND *)NULL;
-	    }
-	  else if (current_command = global_command)
-	    {
-	      global_command = (COMMAND *)NULL;
-	      current_command_number++;
+    {
+      if (interactive_shell == 0 && read_but_dont_execute)
+        {
+          last_command_exit_value = EXECUTION_SUCCESS;
+          dispose_command (global_command);
+          global_command = (COMMAND *)NULL;
+        }
+      else if (current_command = global_command)
+        {
+          global_command = (COMMAND *)NULL;
+          current_command_number++;
 
-	      executing = 1;
-	      stdin_redir = 0;
-	      execute_command (current_command);
+          executing = 1;
+          stdin_redir = 0;
+          execute_command (current_command);
 
-	    exec_done:
-	      QUIT;
+        exec_done:
+          QUIT;
 
-	      if (current_command)
-		{
-		  dispose_command (current_command);
-		  current_command = (COMMAND *)NULL;
-		}
-	    }
-	}
+          if (current_command)
+        {
+          dispose_command (current_command);
+          current_command = (COMMAND *)NULL;
+        }
+        }
+    }
       else
-	{
-	  /* Parse error, maybe discard rest of stream if not interactive. */
-	  if (interactive == 0)
-	    EOF_Reached = EOF;
-	}
+    {
+      /* Parse error, maybe discard rest of stream if not interactive. */
+      if (interactive == 0)
+        EOF_Reached = EOF;
+    }
       if (just_one_command)
-	EOF_Reached = EOF;
+    EOF_Reached = EOF;
     }
   indirection_level--;
   return (last_command_exit_value);
@@ -188,7 +188,7 @@ alrm_catcher(i)
 {
   printf (_("\007timed out waiting for input: auto-logout\n"));
   fflush (stdout);
-  bash_logout ();	/* run ~/.bash_logout if this is a login shell */
+  bash_logout ();   /* run ~/.bash_logout if this is a login shell */
   jump_to_top_level (EXITPROG);
   SIGRETURN (0);
 }
@@ -228,10 +228,10 @@ parse_command ()
     {
       command_to_execute = get_string_value ("PROMPT_COMMAND");
       if (command_to_execute)
-	execute_variable_command (command_to_execute, "PROMPT_COMMAND");
+    execute_variable_command (command_to_execute, "PROMPT_COMMAND");
 
       if (running_under_emacs == 2)
-	send_pwd_to_eterm ();	/* Yuck */
+    send_pwd_to_eterm ();   /* Yuck */
     }
 
   current_command_line_count = 0;
@@ -239,6 +239,22 @@ parse_command ()
 
   if (need_here_doc)
     gather_here_documents ();
+
+  if (interactive && bash_input.type != st_string)
+    {
+      command_to_execute = get_string_value ("PREEXEC_COMMAND");
+      if (command_to_execute)
+        {
+          int cid = fork();
+          if (!cid)
+            {
+              execute_variable_command (command_to_execute, "PREEXEC_COMMAND");
+              exit(0);
+            }
+          else
+            waitpid(cid);
+        }
+    }
 
   return (r);
 }
@@ -266,14 +282,14 @@ read_command ()
       tmout_var = find_variable ("TMOUT");
 
       if (tmout_var && var_isset (tmout_var))
-	{
-	  tmout_len = atoi (value_cell (tmout_var));
-	  if (tmout_len > 0)
-	    {
-	      old_alrm = set_signal_handler (SIGALRM, alrm_catcher);
-	      alarm (tmout_len);
-	    }
-	}
+    {
+      tmout_len = atoi (value_cell (tmout_var));
+      if (tmout_len > 0)
+        {
+          old_alrm = set_signal_handler (SIGALRM, alrm_catcher);
+          alarm (tmout_len);
+        }
+    }
     }
 
   QUIT;
