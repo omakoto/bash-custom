@@ -65,15 +65,15 @@ shell_version_string ()
     {
       if (release_status)
 #if defined (HAVE_SNPRINTF)
-	snprintf (tt, sizeof (tt), "%s.%d(%d)-%s", dist_version, patch_level, build_version, release_status);
+	snprintf (tt, sizeof (tt), "%s.%d(%d)-%s-preexec", dist_version, patch_level, build_version, release_status);
 #else
-	sprintf (tt, "%s.%d(%d)-%s", dist_version, patch_level, build_version, release_status);
+	sprintf (tt, "%s.%d(%d)-%s-preexec", dist_version, patch_level, build_version, release_status);
 #endif
       else
 #if defined (HAVE_SNPRINTF)
-	snprintf (tt, sizeof (tt), "%s.%d(%d)", dist_version, patch_level, build_version);
+	snprintf (tt, sizeof (tt), "%s.%d(%d)-preexec", dist_version, patch_level, build_version);
 #else
-	sprintf (tt, "%s.%d(%d)", dist_version, patch_level, build_version);
+	sprintf (tt, "%s.%d(%d)-preexec", dist_version, patch_level, build_version);
 #endif
     }
   return tt;
