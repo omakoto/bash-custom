@@ -68,3 +68,11 @@ support/Makefile
 syntax.c
 version.h
 
+printenv
+recho
+tests/printenv
+tests/recho
+tests/xcase
+tests/zecho
+xcase
+zecho
