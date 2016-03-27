@@ -245,14 +245,9 @@ parse_command ()
       command_to_execute = get_string_value ("PREEXEC_COMMAND");
       if (command_to_execute)
         {
-          int cid = fork();
-          if (!cid)
-            {
-              execute_variable_command (command_to_execute, "PREEXEC_COMMAND");
-              exit(0);
-            }
-          else
-            waitpid(cid);
+          COMMAND* real_command = global_command;
+          execute_variable_command (command_to_execute, "PREEXEC_COMMAND");
+          global_command = real_command;
         }
     }
 
